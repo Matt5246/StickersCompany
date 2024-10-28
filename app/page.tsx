@@ -12,13 +12,13 @@ const categories = [
     title: "Anime Stickers",
     description: "Transform your ride with premium anime-inspired vinyl stickers featuring your favorite characters and series.",
     icon: <Sparkles className="h-6 w-6" />,
-    image: "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=800&auto=format&fit=crop&q=60",
+    image: "https://images.unsplash.com/photo-1621360841013-c7683c659ec6?w=800&auto=format&fit=crop&q=60",
     items: [
       {
         id: 1,
         title: "Initial D AE86 Drift King",
         price: 12.99,
-        image: "https://i.imgur.com/2YyHqyE.jpg",
+        image: "https://images.unsplash.com/photo-1621360841013-c7683c659ec6?w=800&auto=format&fit=crop&q=60",
         rating: 4.8,
         sales: 234,
         badge: "Best Seller"
@@ -27,7 +27,7 @@ const categories = [
         id: 2,
         title: "Naruto Akatsuki Cloud",
         price: 9.99,
-        image: "https://i.imgur.com/L8tEhJx.jpg",
+        image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60",
         rating: 4.9,
         sales: 456,
         badge: "Popular"
@@ -39,13 +39,13 @@ const categories = [
     title: "Regular Stickers",
     description: "Premium vinyl decals designed to make your vehicle stand out with style and personality.",
     icon: <Palette className="h-6 w-6" />,
-    image: "https://images.unsplash.com/photo-1625772452859-1c03d5bf1137?w=800&auto=format&fit=crop&q=60",
+    image: "https://images.unsplash.com/photo-1614036634955-ae5e90f9b9eb?w=800&auto=format&fit=crop&q=60",
     items: [
       {
         id: 3,
         title: "Racing Stripes Pro",
         price: 14.99,
-        image: "https://i.imgur.com/7XcBdZg.jpg",
+        image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60",
         rating: 4.6,
         sales: 567,
         badge: "Premium"
@@ -54,7 +54,7 @@ const categories = [
         id: 4,
         title: "Dragon Tribal Design",
         price: 19.99,
-        image: "https://i.imgur.com/uH2UVxE.jpg",
+        image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60",
         rating: 4.5,
         sales: 234,
         badge: "New"
@@ -66,13 +66,13 @@ const categories = [
     title: "Custom Designs",
     description: "Bring your vision to life with our professional artists. Custom-made stickers tailored to your specifications.",
     icon: <Pencil className="h-6 w-6" />,
-    image: "https://images.unsplash.com/photo-1614036634955-ae5e90f9b9eb?w=800&auto=format&fit=crop&q=60",
+    image: "https://images.unsplash.com/photo-1615529182904-14819c35db37?w=800&auto=format&fit=crop&q=60",
     items: [
       {
         id: 5,
         title: "Custom Name Calligraphy",
         price: 24.99,
-        image: "https://i.imgur.com/pK1YFZb.jpg",
+        image: "https://images.unsplash.com/photo-1615529182904-14819c35db37?w=800&auto=format&fit=crop&q=60",
         rating: 5.0,
         sales: 123,
         badge: "Custom"
@@ -81,7 +81,7 @@ const categories = [
         id: 6,
         title: "Personal Logo Design",
         price: 29.99,
-        image: "https://i.imgur.com/NXdGnl7.jpg",
+        image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60",
         rating: 4.9,
         sales: 89,
         badge: "Premium Custom"
@@ -132,7 +132,7 @@ export default function Home() {
                   {category.description}
                 </p>
                 <Link href={`/stickers/${category.id}`}>
-                  <Button variant="outline" size="lg" className="group">
+                  <Button variant="outline" size="lg" className="group mt-5">
                     View All {category.title}
                     <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
