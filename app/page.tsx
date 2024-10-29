@@ -15,23 +15,59 @@ const categories = [
     image: "https://images.unsplash.com/photo-1621360841013-c7683c659ec6?w=800&auto=format&fit=crop&q=60",
     items: [
       {
-        id: 1,
-        title: "Initial D AE86 Drift King",
-        price: 12.99,
-        image: "https://images.unsplash.com/photo-1621360841013-c7683c659ec6?w=800&auto=format&fit=crop&q=60",
-        rating: 4.8,
-        sales: 234,
-        badge: "Best Seller"
+        id: 7,
+        title: "pray pose",
+        price: 14.99,
+        image: "/145.jpg",
+        rating: 4.7,
+        sales: 345,
+        badge: "New"
       },
       {
-        id: 2,
-        title: "Naruto Akatsuki Cloud",
-        price: 9.99,
-        image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60",
-        rating: 4.9,
-        sales: 456,
-        badge: "Popular"
-      }
+        id: 8,
+        title: "elf",
+        price: 14.99,
+        image: "/146.jpg",
+        rating: 4.7,
+        sales: 202,
+        badge: "New"
+      },
+      {
+        id: 8,
+        title: "exclusive girl",
+        price: 14.99,
+        image: "/147.jpg",
+        rating: 4.7,
+        sales: 130,
+        badge: "New"
+      },
+      {
+        id: 8,
+        title: "Nice ass!",
+        price: 14.99,
+        image: "/148.jpg",
+        rating: 4.7,
+        sales: 40,
+        badge: "New"
+      },
+      {
+        id: 8,
+        title: "kitty",
+        price: 14.99,
+        image: "/149.jpg",
+        rating: 4.7,
+        sales: 180,
+        badge: "New"
+      },
+      {
+        id: 8,
+        title: "milo in green",
+        price: 14.99,
+        image: "/150.jpg",
+        rating: 4.7,
+        sales: 900,
+        badge: "New"
+      },
     ]
   },
   {
@@ -132,7 +168,7 @@ export default function Home() {
                   {category.description}
                 </p>
                 <Link href={`/stickers/${category.id}`}>
-                  <Button variant="outline" size="lg" className="group mt-5">
+                  <Button variant="outline" size="xl" className="group mt-5">
                     View All {category.title}
                     <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
@@ -149,7 +185,7 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {category.items.map((sticker) => (
+              {category.items.slice(0, 2).map((sticker) => (
                 <Card key={sticker.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 group">
                   <div className="relative aspect-video">
                     <img
@@ -164,9 +200,9 @@ export default function Home() {
                     >
                       <Heart className="h-5 w-5" />
                     </Button>
-                    {sticker.badge && (
+                    {sticker?.badge && (
                       <Badge className="absolute top-3 left-3 bg-blue-600 text-white">
-                        {sticker.badge}
+                        {sticker?.badge}
                       </Badge>
                     )}
                   </div>
@@ -174,7 +210,7 @@ export default function Home() {
                     <div className="flex justify-between items-start mb-3">
                       <h3 className="font-semibold text-xl">{sticker.title}</h3>
                       <Badge variant="secondary" className="text-lg px-3 py-1">
-                        ${sticker.price}
+                        {sticker.price}zł
                       </Badge>
                     </div>
                     <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400 mb-4">

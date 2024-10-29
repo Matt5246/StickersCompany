@@ -1,20 +1,68 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ShoppingCart, Star, ArrowLeft, Filter, SlidersHorizontal } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Heart, ShoppingCart, Star, ArrowLeft, Filter, SlidersHorizontal, ZoomIn, Check } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { categoryData } from "@/lib/utils";
 
-
 export default function CategoryPage({ params }: { params: { category: string } }) {
     const category = categoryData[params.category as keyof typeof categoryData];
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [filterPrice, setFilterPrice] = useState<number | null>(null);
+    const [filterSize, setFilterSize] = useState<string | null>(null);
+    const [sortOption, setSortOption] = useState<string>("");
 
     if (!category) {
         return <div>Category not found</div>;
     }
+
+    const allSizes = Array.from(
+        new Set(category.items.flatMap(item => item.sizes))
+    );
+
+    const priceRanges = [
+        { label: "All Prices", value: null },
+        { label: "Under $10", value: 10 },
+        { label: "Under $15", value: 15 },
+        { label: "Under $20", value: 20 },
+        { label: "Under $30", value: 30 }
+    ];
+
+    const sortOptions = [
+        { label: "Featured", value: "" },
+        { label: "Price: Low to High", value: "priceLowToHigh" },
+        { label: "Price: High to Low", value: "priceHighToLow" },
+        { label: "Best Rating", value: "rating" },
+        { label: "Most Sold", value: "sales" }
+    ];
+
+    const filteredItems = category.items
+        .filter((item) => {
+            return (filterPrice ? item.price <= filterPrice : true) &&
+                (filterSize ? item.sizes.includes(filterSize) : true);
+        })
+        .sort((a, b) => {
+            switch (sortOption) {
+                case "priceLowToHigh": return a.price - b.price;
+                case "priceHighToLow": return b.price - a.price;
+                case "rating": return b.rating - a.rating;
+                case "sales": return b.sales - a.sales;
+                default: return 0;
+            }
+        });
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -32,50 +80,97 @@ export default function CategoryPage({ params }: { params: { category: string } 
                             <p className="text-gray-600 dark:text-gray-400">{category.description}</p>
                         </div>
                         <div className="flex gap-2">
-                            <Button variant="outline" className="gap-2">
-                                <Filter className="h-4 w-4" />
-                                Filter
-                            </Button>
-                            <Button variant="outline" className="gap-2">
-                                <SlidersHorizontal className="h-4 w-4" />
-                                Sort
-                            </Button>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="outline" className="gap-2">
+                                        <Filter className="h-4 w-4" />
+                                        Filter
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-56">
+                                    <DropdownMenuLabel>Price Range</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    {priceRanges.map((range) => (
+                                        <DropdownMenuItem
+                                            key={range.label}
+                                            onClick={() => setFilterPrice(range.value)}
+                                            className="flex items-center justify-between"
+                                        >
+                                            {range.label}
+                                            {filterPrice === range.value && <Check className="h-4 w-4" />}
+                                        </DropdownMenuItem>
+                                    ))}
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuLabel>Size</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem
+                                        onClick={() => setFilterSize(null)}
+                                        className="flex items-center justify-between"
+                                    >
+                                        All Sizes
+                                        {filterSize === null && <Check className="h-4 w-4" />}
+                                    </DropdownMenuItem>
+                                    {allSizes.map((size) => (
+                                        <DropdownMenuItem
+                                            key={size}
+                                            onClick={() => setFilterSize(size)}
+                                            className="flex items-center justify-between"
+                                        >
+                                            {size}
+                                            {filterSize === size && <Check className="h-4 w-4" />}
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="outline" className="gap-2">
+                                        <SlidersHorizontal className="h-4 w-4" />
+                                        Sort
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-56">
+                                    {sortOptions.map((option) => (
+                                        <DropdownMenuItem
+                                            key={option.value}
+                                            onClick={() => setSortOption(option.value)}
+                                            className="flex items-center justify-between"
+                                        >
+                                            {option.label}
+                                            {sortOption === option.value && <Check className="h-4 w-4" />}
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {category.items.map((sticker) => (
+                    {filteredItems.map((sticker) => (
                         <Card key={sticker.id} className="overflow-hidden hover:shadow-xl transition-all">
                             <Tabs defaultValue="image1" className="w-full">
                                 <div className="relative">
-                                    <TabsContent value="image1" className="m-0">
-                                        <div className="aspect-[16/9]">
-                                            <img
-                                                src={sticker.images[0]}
-                                                alt={`${sticker.title} - View 1`}
-                                                className="object-cover w-full h-full"
-                                            />
-                                        </div>
-                                    </TabsContent>
-                                    <TabsContent value="image2" className="m-0">
-                                        <div className="aspect-[16/9]">
-                                            <img
-                                                src={sticker.images[1]}
-                                                alt={`${sticker.title} - View 2`}
-                                                className="object-cover w-full h-full"
-                                            />
-                                        </div>
-                                    </TabsContent>
-                                    <TabsContent value="image3" className="m-0">
-                                        <div className="aspect-[16/9]">
-                                            <img
-                                                src={sticker.images[2]}
-                                                alt={`${sticker.title} - View 3`}
-                                                className="object-cover w-full h-full"
-                                            />
-                                        </div>
-                                    </TabsContent>
+                                    {sticker.images.map((image, index) => (
+                                        <TabsContent key={`image${index + 1}`} value={`image${index + 1}`} className="m-0 cursor-pointer" onClick={() => setSelectedImage(image)}>
+                                            <div className="aspect-[16/9] relative group">
+                                                <img
+                                                    src={image}
+                                                    alt={`${sticker.title} - View ${index + 1}`}
+                                                    className="object-cover w-full h-full"
+                                                />
+                                                <Button
+                                                    size="icon"
+                                                    variant="secondary"
+                                                    className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    onClick={() => setSelectedImage(image)}
+                                                >
+                                                    <ZoomIn className="h-5 w-5" />
+                                                </Button>
+                                            </div>
+                                        </TabsContent>
+                                    ))}
                                     <Button
                                         size="icon"
                                         variant="ghost"
@@ -86,27 +181,15 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                 </div>
                                 <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800/50">
                                     <TabsList className="w-full gap-2">
-                                        <TabsTrigger value="image1" className="w-20 h-12 p-0">
-                                            <img
-                                                src={sticker.images[0]}
-                                                alt="Thumbnail 1"
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </TabsTrigger>
-                                        <TabsTrigger value="image2" className="w-20 h-12 p-0">
-                                            <img
-                                                src={sticker.images[1]}
-                                                alt="Thumbnail 2"
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </TabsTrigger>
-                                        <TabsTrigger value="image3" className="w-20 h-12 p-0">
-                                            <img
-                                                src={sticker.images[2]}
-                                                alt="Thumbnail 3"
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </TabsTrigger>
+                                        {sticker.images.map((image, index) => (
+                                            <TabsTrigger key={`thumb${index + 1}`} value={`image${index + 1}`} className="w-20 h-12 p-0">
+                                                <img
+                                                    src={image}
+                                                    alt={`Thumbnail ${index + 1}`}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </TabsTrigger>
+                                        ))}
                                     </TabsList>
                                 </div>
                             </Tabs>
@@ -160,6 +243,14 @@ export default function CategoryPage({ params }: { params: { category: string } 
                     ))}
                 </div>
             </div>
+
+            <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+                {selectedImage && (
+                    <DialogContent className="max-w-3xl w-full p-0 border-0">
+                        <img src={selectedImage} alt="Zoomed in view" className="w-full h-auto" />
+                    </DialogContent>
+                )}
+            </Dialog>
         </div>
     );
 }
