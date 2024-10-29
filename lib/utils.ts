@@ -15,11 +15,11 @@ export const categoryData = {
           id: 7,
           title: "pray pose",
           price: 12.99, // Changed price
-          image: "/145.jpg",
+          image: "/145.JPG",
           rating: 4.8, // Changed rating
           sales: 450, // Changed sales
           badge: "Best Seller", // Changed badge
-          images: ["/145.jpg", "/146.jpg", "/147.jpg"],
+          images: ["/145.JPG", "/146.JPG", "/147.JPG"],
           sizes: ["Small (5\")", "Medium (8\")", "Large (12\")"],
           colors: ["Purple", "White", "Silver", "Gold"] // Added a new color
         },
@@ -27,11 +27,11 @@ export const categoryData = {
           id: 8,
           title: "elf",
           price: 16.99, // Changed price
-          image: "/146.jpg",
+          image: "public/146.JPG",
           rating: 4.5, // Changed rating
           sales: 250, // Changed sales
           badge: "Featured", // Changed badge
-          images: ["/146.jpg", "/149.jpg", "/147.jpg"],
+          images: ["/146.JPG", "/149.JPG", "/147.JPG"],
           sizes: ["Medium (8\")", "Large (12\")", "XL (16\")"], // Added a new size
           colors: ["Green", "White", "Brown", "Blue"] // Added a new color
         },
@@ -39,11 +39,11 @@ export const categoryData = {
           id: 9,
           title: "exclusive girl",
           price: 14.49, // Changed price
-          image: "/147.jpg",
+          image: "/147.JPG",
           rating: 4.6, // Changed rating
           sales: 150, // Changed sales
           badge: "Trending", // Changed badge
-          images: ["/147.jpg", "/146.jpg", "/147.jpg"],
+          images: ["/147.JPG", "/146.JPG", "/147.JPG"],
           sizes: ["Small (5\")", "Medium (8\")", "Large (12\")"],
           colors: ["Pink", "Blue", "Black", "Yellow"] // Added a new color
         },
@@ -51,11 +51,11 @@ export const categoryData = {
           id: 10,
           title: "Nice ass!",
           price: 15.99, // Changed price
-          image: "/148.jpg",
+          image: "/148.JPG",
           rating: 4.7, // Kept the rating
           sales: 70, // Changed sales
           badge: "Popular", // Changed badge
-          images: ["/148.jpg", "/146.jpg", "/147.jpg"],
+          images: ["/148.JPG", "/146.JPG", "/147.JPG"],
           sizes: ["Small (5\")", "Medium (8\")", "Large (12\")"],
           colors: ["Red", "White", "Black", "Purple"] // Added a new color
         },
@@ -63,11 +63,11 @@ export const categoryData = {
           id: 11,
           title: "kitty",
           price: 13.99, // Changed price
-          image: "/149.jpg",
+          image: "/149.JPG",
           rating: 4.8, // Changed rating
           sales: 190, // Changed sales
           badge: "Exclusive", // Changed badge
-          images: ["/149.jpg", "/146.jpg", "/147.jpg"],
+          images: ["/149.JPG", "/146.JPG", "/147.JPG"],
           sizes: ["Small (5\")", "Medium (8\")", "Large (12\")"],
           colors: ["Gray", "White", "Black", "Pink"] // Added a new color
         },
@@ -75,11 +75,11 @@ export const categoryData = {
           id: 12,
           title: "milo in green",
           price: 17.99, // Changed price
-          image: "/150.jpg",
+          image: "/150.JPG",
           rating: 4.9, // Changed rating
           sales: 1100, // Changed sales
           badge: "Hot Item", // Changed badge
-          images: ["/150.jpg", "/146.jpg", "/147.jpg"],
+          images: ["/150.JPG", "/146.JPG", "/147.JPG"],
           sizes: ["Small (5\")", "Medium (8\")", "Large (12\")", "XL (16\")"], // Added a new size
           colors: ["Green", "Yellow", "Black", "Red"] // Added a new color
         }

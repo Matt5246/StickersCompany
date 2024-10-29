@@ -18,7 +18,7 @@ const categories = [
         id: 7,
         title: "pray pose",
         price: 14.99,
-        image: "/145.jpg",
+        image: "/145.JPG",
         rating: 4.7,
         sales: 345,
         badge: "New"
@@ -27,7 +27,7 @@ const categories = [
         id: 8,
         title: "elf",
         price: 14.99,
-        image: "/146.jpg",
+        image: "/146.JPG",
         rating: 4.7,
         sales: 202,
         badge: "New"
@@ -36,7 +36,7 @@ const categories = [
         id: 8,
         title: "exclusive girl",
         price: 14.99,
-        image: "/147.jpg",
+        image: "/147.JPG",
         rating: 4.7,
         sales: 130,
         badge: "New"
@@ -45,7 +45,7 @@ const categories = [
         id: 8,
         title: "Nice ass!",
         price: 14.99,
-        image: "/148.jpg",
+        image: "/148.JPG",
         rating: 4.7,
         sales: 40,
         badge: "New"
@@ -54,7 +54,7 @@ const categories = [
         id: 8,
         title: "kitty",
         price: 14.99,
-        image: "/149.jpg",
+        image: "/149.JPG",
         rating: 4.7,
         sales: 180,
         badge: "New"
@@ -63,7 +63,7 @@ const categories = [
         id: 8,
         title: "milo in green",
         price: 14.99,
-        image: "/150.jpg",
+        image: "/150.JPG",
         rating: 4.7,
         sales: 900,
         badge: "New"
