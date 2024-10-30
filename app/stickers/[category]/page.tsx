@@ -85,7 +85,7 @@ export default function CategoryPage({ params }: { params: { category: string } 
             }
         });
 
-    const addToCart = (sticker: any) => {
+    const addToCart = (sticker: CartItem) => {
         const size = selectedSizes[sticker.id];
         const color = selectedColors[sticker.id];
 
@@ -357,7 +357,15 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                     </div>
                                 </div>
 
-                                <Button className="w-full gap-2" onClick={() => addToCart(sticker)}>
+                                <Button className="w-full gap-2" onClick={() => addToCart({
+                                    id: sticker.id,
+                                    title: sticker.title,
+                                    price: sticker.price,
+                                    quantity: 1,
+                                    image: sticker.image,
+                                    size: selectedSizes[sticker.id] || "",
+                                    color: selectedColors[sticker.id] || ""
+                                })}>
                                     <ShoppingCart className="h-5 w-5" />
                                     Add to Cart
                                 </Button>
