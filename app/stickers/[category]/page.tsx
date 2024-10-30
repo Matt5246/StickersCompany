@@ -14,9 +14,23 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Heart, ShoppingCart, Star, ArrowLeft, Filter, SlidersHorizontal, ZoomIn, Check } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Heart, ShoppingCart, Star, ArrowLeft, Filter, SlidersHorizontal, ZoomIn, Check, X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { categoryData } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast"
+
+
+interface CartItem {
+    id: number;
+    title: string;
+    price: number;
+    quantity: number;
+    image: string;
+    size: string;
+    color: string;
+}
 
 export default function CategoryPage({ params }: { params: { category: string } }) {
     const category = categoryData[params.category as keyof typeof categoryData];
@@ -24,6 +38,12 @@ export default function CategoryPage({ params }: { params: { category: string } 
     const [filterPrice, setFilterPrice] = useState<number | null>(null);
     const [filterSize, setFilterSize] = useState<string | null>(null);
     const [sortOption, setSortOption] = useState<string>("");
+    const [cart, setCart] = useState<CartItem[]>([]);
+    const [isCartOpen, setIsCartOpen] = useState(false);
+    const [wishlist, setWishlist] = useState<number[]>([]);
+    const [selectedSizes, setSelectedSizes] = useState<{ [key: number]: string }>({});
+    const [selectedColors, setSelectedColors] = useState<{ [key: number]: string }>({});
+    const { toast } = useToast()
 
     if (!category) {
         return <div>Category not found</div>;
@@ -63,6 +83,74 @@ export default function CategoryPage({ params }: { params: { category: string } 
                 default: return 0;
             }
         });
+
+    const addToCart = (sticker: any) => {
+        const size = selectedSizes[sticker.id];
+        const color = selectedColors[sticker.id];
+
+        if (!size || !color) {
+            toast({
+                title: "Please select size and color",
+                description: "You must select both size and color before adding to cart.",
+                variant: "destructive",
+            });
+            return;
+        }
+
+        setCart(prevCart => {
+            const existingItem = prevCart.find(item =>
+                item.id === sticker.id && item.size === size && item.color === color
+            );
+            if (existingItem) {
+                return prevCart.map(item =>
+                    item.id === sticker.id && item.size === size && item.color === color
+                        ? { ...item, quantity: item.quantity + 1 }
+                        : item
+                );
+            } else {
+                return [...prevCart, { ...sticker, quantity: 1, size, color }];
+            }
+        });
+        toast({
+            title: "Added to cart",
+            description: `${sticker.title} (${size}, ${color}) has been added to your cart.`,
+        });
+    };
+
+    const removeFromCart = (id: number, size: string, color: string) => {
+        setCart(prevCart => prevCart.filter(item =>
+            !(item.id === id && item.size === size && item.color === color)
+        ));
+    };
+
+    const updateQuantity = (id: number, size: string, color: string, newQuantity: number) => {
+        if (newQuantity === 0) {
+            removeFromCart(id, size, color);
+        } else {
+            setCart(prevCart =>
+                prevCart.map(item =>
+                    item.id === id && item.size === size && item.color === color
+                        ? { ...item, quantity: newQuantity }
+                        : item
+                )
+            );
+        }
+    };
+
+    const toggleWishlist = (id: number) => {
+        setWishlist(prevWishlist =>
+            prevWishlist.includes(id)
+                ? prevWishlist.filter(itemId => itemId !== id)
+                : [...prevWishlist, id]
+        );
+        toast({
+            title: wishlist.includes(id) ? "Removed from wishlist" : "Added to wishlist",
+            description: `Item has been ${wishlist.includes(id) ? "removed from" : "added to"} your wishlist.`,
+        });
+    };
+
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -143,6 +231,11 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                     ))}
                                 </DropdownMenuContent>
                             </DropdownMenu>
+
+                            <Button variant="outline" className="gap-2" onClick={() => setIsCartOpen(true)}>
+                                <ShoppingCart className="h-4 w-4" />
+                                Cart ({totalItems})
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -174,9 +267,11 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                     <Button
                                         size="icon"
                                         variant="ghost"
-                                        className="absolute top-3 right-3 bg-white/90 hover:bg-white shadow-lg z-10"
+                                        className={`absolute top-3 right-3 bg-white/90 hover:bg-white shadow-lg z-10 ${wishlist.includes(sticker.id) ? 'text-red-500' : ''
+                                            }`}
+                                        onClick={() => toggleWishlist(sticker.id)}
                                     >
-                                        <Heart className="h-5 w-5" />
+                                        <Heart className="h-5 w-5" fill={wishlist.includes(sticker.id) ? "currentColor" : "none"} />
                                     </Button>
                                 </div>
                                 <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800/50">
@@ -213,28 +308,51 @@ export default function CategoryPage({ params }: { params: { category: string } 
 
                                 <div className="space-y-4 mb-6">
                                     <div>
-                                        <h4 className="font-medium mb-2">Available Sizes:</h4>
-                                        <div className="flex gap-2 flex-wrap">
-                                            {sticker.sizes.map((size) => (
-                                                <Badge key={size} variant="outline" className="px-3 py-1">
-                                                    {size}
-                                                </Badge>
-                                            ))}
-                                        </div>
+                                        <h4 className="font-medium mb-2">Size:</h4>
+                                        <RadioGroup
+                                            value={selectedSizes[sticker.id] || ""}
+                                            onValueChange={(value) => setSelectedSizes({ ...selectedSizes, [sticker.id]: value })}
+                                        >
+                                            <div className="flex gap-2 flex-wrap">
+
+                                                {sticker.sizes.map((size) => (
+                                                    <div key={size}>
+                                                        <RadioGroupItem value={size} id={`${sticker.id}-${size}`} className="peer sr-only" />
+                                                        <Label
+                                                            htmlFor={`${sticker.id}-${size}`}
+                                                            className="flex items-center justify-center rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                                                        >
+                                                            {size}
+                                                        </Label>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </RadioGroup>
                                     </div>
                                     <div>
-                                        <h4 className="font-medium mb-2">Colors:</h4>
-                                        <div className="flex gap-2 flex-wrap">
-                                            {sticker.colors.map((color) => (
-                                                <Badge key={color} variant="outline" className="px-3 py-1">
-                                                    {color}
-                                                </Badge>
-                                            ))}
-                                        </div>
+                                        <h4 className="font-medium mb-2">Color:</h4>
+                                        <RadioGroup
+                                            value={selectedColors[sticker.id] || ""}
+                                            onValueChange={(value) => setSelectedColors({ ...selectedColors, [sticker.id]: value })}
+                                        >
+                                            <div className="flex gap-2 flex-wrap">
+                                                {sticker.colors.map((color) => (
+                                                    <div key={color}>
+                                                        <RadioGroupItem value={color} id={`${sticker.id}-${color}`} className="peer sr-only" />
+                                                        <Label
+                                                            htmlFor={`${sticker.id}-${color}`}
+                                                            className="flex items-center justify-center rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                                                        >
+                                                            {color}
+                                                        </Label>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </RadioGroup>
                                     </div>
                                 </div>
 
-                                <Button className="w-full gap-2">
+                                <Button className="w-full gap-2" onClick={() => addToCart(sticker)}>
                                     <ShoppingCart className="h-5 w-5" />
                                     Add to Cart
                                 </Button>
@@ -250,6 +368,61 @@ export default function CategoryPage({ params }: { params: { category: string } 
                         <img src={selectedImage} alt="Zoomed in view" className="w-full h-auto" />
                     </DialogContent>
                 )}
+            </Dialog>
+
+            <Dialog open={isCartOpen} onOpenChange={setIsCartOpen}>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogContent className="max-w-md">
+                        <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
+                        {cart.length === 0 ? (
+                            <p>Your cart is empty.</p>
+                        ) : (
+                            <>
+                                {cart.map((item) => (
+                                    <div key={`${item.id}-${item.size}-${item.color}`} className="flex items-center justify-between py-2 border-b">
+                                        <div className="flex items-center">
+                                            <img src={item.image} alt={item.title} className="w-12 h-12 object-cover mr-4" />
+                                            <div>
+                                                <h3 className="font-semibold">{item.title}</h3>
+                                                <p className="text-sm text-gray-500">${item.price}</p>
+                                                <p className="text-xs text-gray-400">{item.size}, {item.color}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity - 1)}
+                                            >
+                                                -
+                                            </Button>
+                                            <span className="mx-2">{item.quantity}</span>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1)}
+                                            >
+                                                +
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="ml-2"
+                                                onClick={() => removeFromCart(item.id, item.size, item.color)}
+                                            >
+                                                <X className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
+                                <div className="mt-4">
+                                    <p className="font-semibold">Total: ${totalPrice.toFixed(2)}</p>
+                                </div>
+                                <Button className="w-full mt-4">Proceed to Checkout</Button>
+                            </>
+                        )}
+                    </DialogContent>
+                </DialogContent>
             </Dialog>
         </div>
     );
