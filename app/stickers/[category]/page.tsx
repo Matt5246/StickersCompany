@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -248,8 +249,10 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                     {sticker.images.map((image, index) => (
                                         <TabsContent key={`image${index + 1}`} value={`image${index + 1}`} className="m-0 cursor-pointer" onClick={() => setSelectedImage(image)}>
                                             <div className="aspect-[1/1] relative group">
-                                                <img
+                                                <Image
                                                     src={image}
+                                                    width={500}
+                                                    height={500}
                                                     alt={`${sticker.title} - View ${index + 1}`}
                                                     className="object-cover w-full h-full"
                                                 />
@@ -278,8 +281,10 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                     <TabsList className="w-full gap-2">
                                         {sticker.images.map((image, index) => (
                                             <TabsTrigger key={`thumb${index + 1}`} value={`image${index + 1}`} className="w-20 h-12 p-0">
-                                                <img
+                                                <Image
                                                     src={image}
+                                                    width={500}
+                                                    height={500}
                                                     alt={`Thumbnail ${index + 1}`}
                                                     className="w-full h-full object-cover"
                                                 />
@@ -365,7 +370,7 @@ export default function CategoryPage({ params }: { params: { category: string } 
             <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
                 {selectedImage && (
                     <DialogContent className="max-w-3xl w-full p-0 border-0">
-                        <img src={selectedImage} alt="Zoomed in view" className="w-full h-auto" />
+                        <Image width={500} height={500} src={selectedImage} alt="Zoomed in view" className="w-full h-auto" />
                     </DialogContent>
                 )}
             </Dialog>
@@ -381,7 +386,7 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                 {cart.map((item) => (
                                     <div key={`${item.id}-${item.size}-${item.color}`} className="flex items-center justify-between py-2 border-b">
                                         <div className="flex items-center">
-                                            <img src={item.image} alt={item.title} className="w-12 h-12 object-cover mr-4" />
+                                            <Image width={500} height={500} src={item.image} alt={item.title} className="w-12 h-12 object-cover mr-4" />
                                             <div>
                                                 <h3 className="font-semibold">{item.title}</h3>
                                                 <p className="text-sm text-gray-500">${item.price}</p>

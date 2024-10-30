@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +19,7 @@ const categories = [
         id: 7,
         title: "pray pose",
         price: 14.99,
-        image: "/145.JPG",
+        image: "/145.jpg",
         rating: 4.7,
         sales: 345,
         badge: "New"
@@ -27,7 +28,7 @@ const categories = [
         id: 8,
         title: "elf",
         price: 14.99,
-        image: "/146.JPG",
+        image: "/146.jpg",
         rating: 4.7,
         sales: 202,
         badge: "New"
@@ -36,7 +37,7 @@ const categories = [
         id: 8,
         title: "exclusive girl",
         price: 14.99,
-        image: "/147.JPG",
+        image: "/147.jpg",
         rating: 4.7,
         sales: 130,
         badge: "New"
@@ -45,7 +46,7 @@ const categories = [
         id: 8,
         title: "Nice ass!",
         price: 14.99,
-        image: "/148.JPG",
+        image: "/148.jpg",
         rating: 4.7,
         sales: 40,
         badge: "New"
@@ -54,7 +55,7 @@ const categories = [
         id: 8,
         title: "kitty",
         price: 14.99,
-        image: "/149.JPG",
+        image: "/149.jpg",
         rating: 4.7,
         sales: 180,
         badge: "New"
@@ -63,7 +64,7 @@ const categories = [
         id: 8,
         title: "milo in green",
         price: 14.99,
-        image: "/150.JPG",
+        image: "/150.jpg",
         rating: 4.7,
         sales: 900,
         badge: "New"
@@ -175,9 +176,11 @@ export default function Home() {
                 </Link>
               </div>
               <div className="relative aspect-[16/9] rounded-2xl overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-transform duration-300">
-                <img
+                <Image
                   src={category.image}
                   alt={category.title}
+                  width={500}
+                  height={500}
                   className="object-cover w-full h-full"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
@@ -188,9 +191,11 @@ export default function Home() {
               {category.items.slice(0, 2).map((sticker) => (
                 <Card key={sticker.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 group">
                   <div className="relative aspect-[1/1]">
-                    <img
+                    <Image
                       src={sticker.image}
                       alt={sticker.title}
+                      width={500}
+                      height={500}
                       className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
                     />
                     <Button

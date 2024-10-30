@@ -27,7 +27,7 @@ export const categoryData = {
           id: 8,
           title: "elf",
           price: 16.99, // Changed price
-          image: "public/146.JPG",
+          image: "/146.JPG",
           rating: 4.5, // Changed rating
           sales: 250, // Changed sales
           badge: "Featured", // Changed badge
