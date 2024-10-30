@@ -187,7 +187,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {category.items.slice(0, 2).map((sticker) => (
                 <Card key={sticker.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 group">
-                  <div className="relative aspect-video">
+                  <div className="relative aspect-[1/1]">
                     <img
                       src={sticker.image}
                       alt={sticker.title}

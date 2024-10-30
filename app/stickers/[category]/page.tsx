@@ -154,7 +154,7 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                 <div className="relative">
                                     {sticker.images.map((image, index) => (
                                         <TabsContent key={`image${index + 1}`} value={`image${index + 1}`} className="m-0 cursor-pointer" onClick={() => setSelectedImage(image)}>
-                                            <div className="aspect-[16/9] relative group">
+                                            <div className="aspect-[1/1] relative group">
                                                 <img
                                                     src={image}
                                                     alt={`${sticker.title} - View ${index + 1}`}
