@@ -21,6 +21,8 @@ import { Heart, ShoppingCart, Star, ArrowLeft, Filter, SlidersHorizontal, ZoomIn
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { categoryData } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast"
+import { useEffect } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
 
 
 interface CartItem {
@@ -32,6 +34,9 @@ interface CartItem {
     size: string;
     color: string;
 }
+const stripePromise = loadStripe(
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
+);
 
 export default function CategoryPage({ params }: { params: { category: string } }) {
     const category = categoryData[params.category as keyof typeof categoryData];
@@ -53,7 +58,17 @@ export default function CategoryPage({ params }: { params: { category: string } 
     const allSizes = Array.from(
         new Set(category.items.flatMap(item => item.sizes))
     );
+    useEffect(() => {
+        // Check to see if this is a redirect back from Checkout
+        const query = new URLSearchParams(window.location.search);
+        if (query.get('success')) {
+            console.log('Order placed! You will receive an email confirmation.');
+        }
 
+        if (query.get('canceled')) {
+            console.log('Order canceled -- continue to shop around and checkout when you’re ready.');
+        }
+    }, []);
     const priceRanges = [
         { label: "All Prices", value: null },
         { label: "Under $10", value: 10 },
@@ -390,7 +405,7 @@ export default function CategoryPage({ params }: { params: { category: string } 
                         {cart.length === 0 ? (
                             <p>Your cart is empty.</p>
                         ) : (
-                            <>
+                            <form action="/api/checkout_sessions" method="POST">
                                 {cart.map((item) => (
                                     <div key={`${item.id}-${item.size}-${item.color}`} className="flex items-center justify-between py-2 border-b">
                                         <div className="flex items-center">
@@ -431,8 +446,8 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                 <div className="mt-4">
                                     <p className="font-semibold">Total: ${totalPrice.toFixed(2)}</p>
                                 </div>
-                                <Button className="w-full mt-4">Proceed to Checkout</Button>
-                            </>
+                                <Button className="w-full mt-4" type="submit" role="link">Proceed to Checkout</Button>
+                            </form>
                         )}
                     </DialogContent>
                 </DialogContent>
