@@ -18,14 +18,15 @@ export async function POST(req) {
         submit_type: 'donate',
         billing_address_collection: 'auto',
         shipping_address_collection: {
-          allowed_countries: ['US', 'PL', 'DE', 'FR', 'ES', 'IT', 'GB', 'CA', 'AU'],
+          allowed_countries: [ 'PL'],
         },
         line_items: [
           {
             // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-            price: 'price_1QkCJ7GhSqjflw2PJ1MfFmLw',
+            price: 'price_1QqgJXGbYVPFwzc50BHUyAjb',
             quantity: 1,
           },
+          
         ],
       mode: 'payment',
       success_url: `${baseUrl}/?success=true`,

@@ -1,42 +1,25 @@
+// CategoryPage.js (or your component)
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
+import CartModal from "@/components/CartModal"; // Import the CartModal component
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Heart, ShoppingCart, Star, ArrowLeft, Filter, SlidersHorizontal, ZoomIn, Check, X } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCart } from "@/context/CartContext"; // Import the useCart hook
+import { useToast } from "@/hooks/use-toast";
 import { categoryData } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast"
-import { useEffect } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
-
-
-interface CartItem {
-    id: number;
-    title: string;
-    price: number;
-    quantity: number;
-    image: string;
-    size: string;
-    color: string;
-}
-// const stripePromise = loadStripe(
-//     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
-// );
+import { ArrowLeft, Heart, ShoppingCart, Star, ZoomIn } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { Check, Filter, SlidersHorizontal } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Sticker } from "@/types/types";
 
 export default function CategoryPage({ params }: { params: { category: string } }) {
     const category = categoryData[params.category as keyof typeof categoryData];
@@ -44,37 +27,27 @@ export default function CategoryPage({ params }: { params: { category: string } 
     const [filterPrice, setFilterPrice] = useState<number | null>(null);
     const [filterSize, setFilterSize] = useState<string | null>(null);
     const [sortOption, setSortOption] = useState<string>("");
-    const [cart, setCart] = useState<CartItem[]>([]);
-    const [isCartOpen, setIsCartOpen] = useState(false);
     const [wishlist, setWishlist] = useState<number[]>([]);
     const [selectedSizes, setSelectedSizes] = useState<{ [key: number]: string }>({});
     const [selectedColors, setSelectedColors] = useState<{ [key: number]: string }>({});
-    const { toast } = useToast()
+    const [quantity, setQuantity] = useState(1);
+    const { toast } = useToast();
+    const { addToCart } = useCart();
 
     if (!category) {
         return <div>Category not found</div>;
     }
 
     const allSizes = Array.from(
-        new Set(category.items.flatMap(item => item.sizes))
+        new Set(category.items.flatMap((item) => item.sizes))
     );
-    useEffect(() => {
-        // Check to see if this is a redirect back from Checkout
-        const query = new URLSearchParams(window.location.search);
-        if (query.get('success')) {
-            console.log('Order placed! You will receive an email confirmation.');
-        }
 
-        if (query.get('canceled')) {
-            console.log('Order canceled -- continue to shop around and checkout when you’re ready.');
-        }
-    }, []);
     const priceRanges = [
         { label: "All Prices", value: null },
         { label: "Under $10", value: 10 },
         { label: "Under $15", value: 15 },
         { label: "Under $20", value: 20 },
-        { label: "Under $30", value: 30 }
+        { label: "Under $30", value: 30 },
     ];
 
     const sortOptions = [
@@ -82,25 +55,32 @@ export default function CategoryPage({ params }: { params: { category: string } 
         { label: "Price: Low to High", value: "priceLowToHigh" },
         { label: "Price: High to Low", value: "priceHighToLow" },
         { label: "Best Rating", value: "rating" },
-        { label: "Most Sold", value: "sales" }
+        { label: "Most Sold", value: "sales" },
     ];
 
     const filteredItems = category.items
         .filter((item) => {
-            return (filterPrice ? item.price <= filterPrice : true) &&
-                (filterSize ? item.sizes.includes(filterSize) : true);
+            return (
+                (filterPrice ? item.price <= filterPrice : true) &&
+                (filterSize ? item.sizes.includes(filterSize) : true)
+            );
         })
         .sort((a, b) => {
             switch (sortOption) {
-                case "priceLowToHigh": return a.price - b.price;
-                case "priceHighToLow": return b.price - a.price;
-                case "rating": return b.rating - a.rating;
-                case "sales": return b.sales - a.sales;
-                default: return 0;
+                case "priceLowToHigh":
+                    return a.price - b.price;
+                case "priceHighToLow":
+                    return b.price - a.price;
+                case "rating":
+                    return b.rating - a.rating;
+                case "sales":
+                    return b.sales - a.sales;
+                default:
+                    return 0;
             }
         });
 
-    const addToCart = (sticker: CartItem) => {
+    const handleAddToCart = (sticker: Sticker) => {
         const size = selectedSizes[sticker.id];
         const color = selectedColors[sticker.id];
 
@@ -113,50 +93,25 @@ export default function CategoryPage({ params }: { params: { category: string } 
             return;
         }
 
-        setCart(prevCart => {
-            const existingItem = prevCart.find(item =>
-                item.id === sticker.id && item.size === size && item.color === color
-            );
-            if (existingItem) {
-                return prevCart.map(item =>
-                    item.id === sticker.id && item.size === size && item.color === color
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                );
-            } else {
-                return [...prevCart, { ...sticker, quantity: 1, size, color }];
-            }
+        addToCart({
+            id: sticker.id,
+            title: sticker.title,
+            price: sticker.price,
+            quantity,
+            image: sticker.image,
+            size,
         });
+
         toast({
             title: "Added to cart",
             description: `${sticker.title} (${size}, ${color}) has been added to your cart.`,
         });
     };
 
-    const removeFromCart = (id: number, size: string, color: string) => {
-        setCart(prevCart => prevCart.filter(item =>
-            !(item.id === id && item.size === size && item.color === color)
-        ));
-    };
-
-    const updateQuantity = (id: number, size: string, color: string, newQuantity: number) => {
-        if (newQuantity === 0) {
-            removeFromCart(id, size, color);
-        } else {
-            setCart(prevCart =>
-                prevCart.map(item =>
-                    item.id === id && item.size === size && item.color === color
-                        ? { ...item, quantity: newQuantity }
-                        : item
-                )
-            );
-        }
-    };
-
     const toggleWishlist = (id: number) => {
-        setWishlist(prevWishlist =>
+        setWishlist((prevWishlist) =>
             prevWishlist.includes(id)
-                ? prevWishlist.filter(itemId => itemId !== id)
+                ? prevWishlist.filter((itemId) => itemId !== id)
                 : [...prevWishlist, id]
         );
         toast({
@@ -165,8 +120,6 @@ export default function CategoryPage({ params }: { params: { category: string } 
         });
     };
 
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -247,11 +200,7 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                     ))}
                                 </DropdownMenuContent>
                             </DropdownMenu>
-
-                            <Button variant="outline" className="gap-2" onClick={() => setIsCartOpen(true)}>
-                                <ShoppingCart className="h-4 w-4" />
-                                Cart ({totalItems})
-                            </Button>
+                            <CartModal />
                         </div>
                     </div>
                 </div>
@@ -285,7 +234,7 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                     <Button
                                         size="icon"
                                         variant="ghost"
-                                        className={`absolute top-3 right-3 bg-white/90 hover:bg-white shadow-lg z-10 ${wishlist.includes(sticker.id) ? 'text-red-500' : ''
+                                        className={`absolute top-3 right-3 bg-white/90 hover:bg-white shadow-lg z-10 ${wishlist.includes(sticker.id) ? "text-red-500" : ""
                                             }`}
                                         onClick={() => toggleWishlist(sticker.id)}
                                     >
@@ -321,9 +270,22 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                             <span>{sticker.sales} sold</span>
                                         </div>
                                     </div>
-                                    <Badge variant="secondary" className="text-lg px-3 py-1">
-                                        ${sticker.price}
-                                    </Badge>
+                                    <div className="flex space-x-3 ">
+                                        <Input
+                                            type="number"
+                                            className="w-1/3"
+                                            placeholder="Quantity"
+                                            max={2000}
+                                            value={quantity}
+                                            onChange={(e) => {
+                                                const value = Math.min(Number(e.target.value), 2000);
+                                                setQuantity(value);
+                                            }}
+                                        />
+                                        <Badge variant="secondary" className="text-lg px-3 py-1">
+                                            ${Number(sticker.price * quantity + (quantity * (sticker.sizePrice?.[sticker.sizes.indexOf(selectedSizes[sticker.id])] || 0))).toFixed(2)}
+                                        </Badge>
+                                    </div>
                                 </div>
 
                                 <div className="space-y-4 mb-6">
@@ -334,7 +296,6 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                             onValueChange={(value) => setSelectedSizes({ ...selectedSizes, [sticker.id]: value })}
                                         >
                                             <div className="flex gap-2 flex-wrap">
-
                                                 {sticker.sizes.map((size) => (
                                                     <div key={size}>
                                                         <RadioGroupItem value={size} id={`${sticker.id}-${size}`} className="peer sr-only" />
@@ -372,15 +333,7 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                     </div>
                                 </div>
 
-                                <Button className="w-full gap-2" onClick={() => addToCart({
-                                    id: sticker.id,
-                                    title: sticker.title,
-                                    price: sticker.price,
-                                    quantity: 1,
-                                    image: sticker.image,
-                                    size: selectedSizes[sticker.id] || "",
-                                    color: selectedColors[sticker.id] || ""
-                                })}>
+                                <Button className="w-full gap-2" onClick={() => handleAddToCart(sticker)}>
                                     <ShoppingCart className="h-5 w-5" />
                                     Add to Cart
                                 </Button>
@@ -397,61 +350,8 @@ export default function CategoryPage({ params }: { params: { category: string } 
                     </DialogContent>
                 )}
             </Dialog>
-
-            <Dialog open={isCartOpen} onOpenChange={setIsCartOpen}>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogContent className="max-w-md">
-                        <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
-                        {cart.length === 0 ? (
-                            <p>Your cart is empty.</p>
-                        ) : (
-                            <form action="/api/checkout_sessions" method="POST">
-                                {cart.map((item) => (
-                                    <div key={`${item.id}-${item.size}-${item.color}`} className="flex items-center justify-between py-2 border-b">
-                                        <div className="flex items-center">
-                                            <Image width={500} height={500} src={item.image} alt={item.title} className="w-12 h-12 object-cover mr-4" />
-                                            <div>
-                                                <h3 className="font-semibold">{item.title}</h3>
-                                                <p className="text-sm text-gray-500">${item.price}</p>
-                                                <p className="text-xs text-gray-400">{item.size}, {item.color}</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity - 1)}
-                                            >
-                                                -
-                                            </Button>
-                                            <span className="mx-2">{item.quantity}</span>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1)}
-                                            >
-                                                +
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                className="ml-2"
-                                                onClick={() => removeFromCart(item.id, item.size, item.color)}
-                                            >
-                                                <X className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                ))}
-                                <div className="mt-4">
-                                    <p className="font-semibold">Total: ${totalPrice.toFixed(2)}</p>
-                                </div>
-                                <Button className="w-full mt-4" type="submit" role="link">Proceed to Checkout</Button>
-                            </form>
-                        )}
-                    </DialogContent>
-                </DialogContent>
-            </Dialog>
         </div>
     );
 }
+
+

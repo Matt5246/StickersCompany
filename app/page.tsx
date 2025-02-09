@@ -9,57 +9,12 @@ import { Heart, ShoppingCart, Star, ChevronRight, Sparkles, Palette, Pencil } fr
 
 const categories = [
   {
-    id: "anime",
-    title: "Anime Stickers",
-    description: "Transform your ride with premium anime-inspired vinyl stickers featuring your favorite characters and series.",
-    icon: <Sparkles className="h-6 w-6" />,
-    image: "https://images.unsplash.com/photo-1621360841013-c7683c659ec6?w=800&auto=format&fit=crop&q=60",
+    id: "custom",
+    title: "Custom Designs",
+    description: "Bring your vision to life with our professional artists. Custom-made stickers tailored to your specifications.",
+    icon: <Pencil className="h-6 w-6" />,
+    image: "/150.jpg",
     items: [
-      {
-        id: 7,
-        title: "pray pose",
-        price: 14.99,
-        image: "/145.jpg",
-        rating: 4.7,
-        sales: 345,
-        badge: "New"
-      },
-      {
-        id: 8,
-        title: "elf",
-        price: 14.99,
-        image: "/146.jpg",
-        rating: 4.7,
-        sales: 202,
-        badge: "New"
-      },
-      {
-        id: 8,
-        title: "exclusive girl",
-        price: 14.99,
-        image: "/147.jpg",
-        rating: 4.7,
-        sales: 130,
-        badge: "New"
-      },
-      {
-        id: 8,
-        title: "Nice ass!",
-        price: 14.99,
-        image: "/148.jpg",
-        rating: 4.7,
-        sales: 40,
-        badge: "New"
-      },
-      {
-        id: 8,
-        title: "kitty",
-        price: 14.99,
-        image: "/149.jpg",
-        rating: 4.7,
-        sales: 180,
-        badge: "New"
-      },
       {
         id: 8,
         title: "milo in green",
@@ -69,6 +24,33 @@ const categories = [
         sales: 900,
         badge: "New"
       },
+    ]
+  },
+  {
+    id: "anime",
+    title: "Anime Stickers",
+    description: "Transform your ride with premium anime-inspired vinyl stickers featuring your favorite characters and series.",
+    icon: <Sparkles className="h-6 w-6" />,
+    image: "https://images.unsplash.com/photo-1614036634955-ae5e90f9b9eb?w=800&auto=format&fit=crop&q=60",
+    items: [
+      {
+        id: 3,
+        title: "Racing Stripes Pro",
+        price: 14.99,
+        image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60",
+        rating: 4.6,
+        sales: 567,
+        badge: "Premium"
+      },
+      {
+        id: 4,
+        title: "Dragon Tribal Design",
+        price: 19.99,
+        image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60",
+        rating: 4.5,
+        sales: 234,
+        badge: "New"
+      }
     ]
   },
   {
@@ -97,33 +79,6 @@ const categories = [
         badge: "New"
       }
     ]
-  },
-  {
-    id: "custom",
-    title: "Custom Designs",
-    description: "Bring your vision to life with our professional artists. Custom-made stickers tailored to your specifications.",
-    icon: <Pencil className="h-6 w-6" />,
-    image: "https://images.unsplash.com/photo-1615529182904-14819c35db37?w=800&auto=format&fit=crop&q=60",
-    items: [
-      {
-        id: 5,
-        title: "Custom Name Calligraphy",
-        price: 24.99,
-        image: "https://images.unsplash.com/photo-1615529182904-14819c35db37?w=800&auto=format&fit=crop&q=60",
-        rating: 5.0,
-        sales: 123,
-        badge: "Custom"
-      },
-      {
-        id: 6,
-        title: "Personal Logo Design",
-        price: 29.99,
-        image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60",
-        rating: 4.9,
-        sales: 89,
-        badge: "Premium Custom"
-      }
-    ]
   }
 ];
 
@@ -145,9 +100,11 @@ export default function Home() {
               <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8">
                 Explore Collections
               </Button>
-              <Button size="lg" variant="outline" className=" border-white hover:bg-white/10 text-lg px-8">
-                Custom Design
-              </Button>
+              <Link href='/stickers/custom'>
+                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8" >
+                  Custom Design
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

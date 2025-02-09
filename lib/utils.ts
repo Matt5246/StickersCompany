@@ -20,8 +20,11 @@ export const categoryData = {
           sales: 450, // Changed sales
           badge: "Best Seller", // Changed badge
           images: ["/145.JPG", "/146.JPG", "/147.JPG"],
-          sizes: ["Small (5\")", "Medium (8\")", "Large (12\")"],
-          colors: ["Purple", "White", "Silver", "Gold"] // Added a new color
+          sizes: ["Small (12\")", "Medium (18\")", "Large (24\")", "XL (36\")"], // Added a new size
+          sizePrice: [[3, 1.90, 1.20, 0.3], [3], 10], //0-9 10-39 40-infinty
+          colors: ["Custom Colors Available", "Black", "Red"], 
+          shape: ["square", "Circle", "rectangle"], 
+          lamination: true,
         },
         {
           id: 8,
@@ -32,8 +35,11 @@ export const categoryData = {
           sales: 250, // Changed sales
           badge: "Featured", // Changed badge
           images: ["/146.JPG", "/149.JPG", "/147.JPG"],
-          sizes: ["Medium (8\")", "Large (12\")", "XL (16\")"], // Added a new size
-          colors: ["Green", "White", "Brown", "Blue"] // Added a new color
+          sizes: ["Small (12\")", "Medium (18\")", "Large (24\")", "XL (36\")"], // Added a new size
+          sizePrice: [[3, 1.90, 1.20, 0.3], [3], 10], //0-9 10-39 40-infinty
+          colors: ["Custom Colors Available", "Black", "Red"], 
+          shape: ["square", "Circle", "rectangle"], 
+          lamination: true,
         },
         {
           id: 9,
@@ -44,8 +50,11 @@ export const categoryData = {
           sales: 150, // Changed sales
           badge: "Trending", // Changed badge
           images: ["/147.JPG", "/146.JPG", "/147.JPG"],
-          sizes: ["Small (5\")", "Medium (8\")", "Large (12\")"],
-          colors: ["Pink", "Blue", "Black", "Yellow"] // Added a new color
+          sizes: ["Small (12\")", "Medium (18\")", "Large (24\")", "XL (36\")"], // Added a new size
+          sizePrice: [[3, 1.90, 1.20, 0.3], [3], 10], //0-9 10-39 40-infinty
+          colors: ["Custom Colors Available", "Black", "Red"], 
+          shape: ["square", "Circle", "rectangle"], 
+          lamination: true,
         },
         {
           id: 10,
@@ -56,8 +65,11 @@ export const categoryData = {
           sales: 70, // Changed sales
           badge: "Popular", // Changed badge
           images: ["/148.JPG", "/146.JPG", "/147.JPG"],
-          sizes: ["Small (5\")", "Medium (8\")", "Large (12\")"],
-          colors: ["Red", "White", "Black", "Purple"] // Added a new color
+          sizes: ["Small (12\")", "Medium (18\")", "Large (24\")", "XL (36\")"], // Added a new size
+          sizePrice: [[3, 1.90, 1.20, 0.3], [3], 10], //0-9 10-39 40-infinty
+          colors: ["Custom Colors Available", "Black", "Red"], 
+          shape: ["square", "Circle", "rectangle"], 
+          lamination: true,
         },
         {
           id: 11,
@@ -68,8 +80,11 @@ export const categoryData = {
           sales: 190, // Changed sales
           badge: "Exclusive", // Changed badge
           images: ["/149.JPG", "/146.JPG", "/147.JPG"],
-          sizes: ["Small (5\")", "Medium (8\")", "Large (12\")"],
-          colors: ["Gray", "White", "Black", "Pink"] // Added a new color
+          sizes: ["Small (12\")", "Medium (18\")", "Large (24\")", "XL (36\")"], // Added a new size
+          sizePrice: [[3, 1.90, 1.20, 0.3], [3], 10], //0-9 10-39 40-infinty
+          colors: ["Custom Colors Available", "Black", "Red"], 
+          shape: ["square", "Circle", "rectangle"], 
+          lamination: true,
         },
         {
           id: 12,
@@ -80,8 +95,11 @@ export const categoryData = {
           sales: 1100, // Changed sales
           badge: "Hot Item", // Changed badge
           images: ["/150.JPG", "/146.JPG", "/147.JPG"],
-          sizes: ["Small (5\")", "Medium (8\")", "Large (12\")", "XL (16\")"], // Added a new size
-          colors: ["Green", "Yellow", "Black", "Red"] // Added a new color
+          sizes: ["Small (12\")", "Medium (18\")", "Large (24\")", "XL (36\")"], // Added a new size
+          sizePrice: [[3, 1.90, 1.20, 0.3], [3], 10], //0-9 10-39 40-infinty
+          colors: ["Custom Colors Available", "Black", "Red"], 
+          shape: ["square", "Circle", "rectangle"], 
+          lamination: true,
         }
       ]
     },
@@ -101,8 +119,11 @@ export const categoryData = {
             "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60",
             "https://images.unsplash.com/photo-1615529182904-14819c35db37?w=800&auto=format&fit=crop&q=60"
           ],
-          sizes: ["Medium (24\")", "Large (36\")", "XL (48\")"],
-          colors: ["Black", "White", "Red", "Blue", "Green"] // Added a new color
+          sizes: ["Small (12\")", "Medium (18\")", "Large (24\")", "XL (36\")"], // Added a new size
+          sizePrice: [[3, 1.90, 1.20, 0.3], [3], 10], //0-9 10-39 40-infinty
+          colors: ["Custom Colors Available", "Black", "Red"], 
+          shape: ["square", "Circle", "rectangle"], 
+          lamination: true,
         },
         {
           id: 5,
@@ -117,7 +138,10 @@ export const categoryData = {
             "https://images.unsplash.com/photo-1614036634955-ae5e90f9b9eb?w=800&auto=format&fit=crop&q=60"
           ],
           sizes: ["Small (12\")", "Medium (18\")", "Large (24\")", "XL (36\")"], // Added a new size
-          colors: ["Black", "Silver", "Gold", "Copper"] // Added a new color
+          sizePrice: [[3, 1.90, 1.20, 0.3], [3], 10], //0-9 10-39 40-infinty
+          colors: ["Custom Colors Available", "Black", "Red"], 
+          shape: ["square", "Circle", "rectangle"], 
+          lamination: true,
         }
       ]
     },
@@ -126,24 +150,9 @@ export const categoryData = {
       description: "Get your personalized sticker designs",
       items: [
         {
-          id: 6,
-          title: "Custom Name Calligraphy",
-          price: 24.99, // Kept the price
-          image: "https://images.unsplash.com/photo-1615529182904-14819c35db37?w=800&auto=format&fit=crop&q=60",
-          rating: 5.0, // Kept the rating
-          sales: 130, // Kept the sales
-          images: [
-            "https://images.unsplash.com/photo-1615529182904-14819c35db37?w=800&auto=format&fit=crop&q=60",
-            "https://images.unsplash.com/photo-1626847037657-fd3622613ce9?w=800&auto=format&fit=crop&q=60",
-            "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60"
-          ],
-          sizes: ["Small (6\")", "Medium (12\")", "Large (18\")"],
-          colors: ["Custom Colors Available", "Gold", "Silver"] // Added a new color
-        },
-        {
-          id: 7,
+          id: 1,
           title: "Personal Logo Design",
-          price: 29.99, // Kept the price
+          price: 0, // Kept the price
           image: "https://images.unsplash.com/photo-1626847037657-fd3622613ce9?w=800&auto=format&fit=crop&q=60",
           rating: 4.9, // Kept the rating
           sales: 100, // Changed sales
@@ -152,8 +161,12 @@ export const categoryData = {
             "https://images.unsplash.com/photo-1615529182904-14819c35db37?w=800&auto=format&fit=crop&q=60",
             "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60"
           ],
-          sizes: ["Small (4\")", "Medium (8\")", "Large (12\")", "XL (16\")"], // Added a new size
-          colors: ["Custom Colors Available", "Black", "Red"] // Added a new color
+          sizes: ["Small (0-3cm)", "Medium (3-6cm)", "Large (6-10cm)"], 
+          sizePrice: [[3, 1.90, 1.20, 0.3], [3], 10], //0-9 10-39 40-infinty
+          
+          colors: ["Custom Colors Available", "Black", "Red"], 
+          shape: ["square", "Circle", "rectangle"], 
+          lamination: true, 
         }
       ]
     }
