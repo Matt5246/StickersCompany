@@ -11,14 +11,14 @@ export default function CartModal() {
     const { cartItems, removeFromCart, updateQuantity } = useCart();
 
     const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0);
 
-    const handleQuantityChange = (id, size, color, newQuantity) => {
-        if (newQuantity < 0) {
-            newQuantity = 0; 
+    const handleQuantityChange = (id, size, newQuantity) => {
+        if (newQuantity > 0) {
+            updateQuantity(id, size, newQuantity);
         }
-        updateQuantity(id, size, color, newQuantity);
     };
+    
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -45,7 +45,7 @@ export default function CartModal() {
                                     />
                                     <div>
                                         <h3 className="font-semibold">{item.title}</h3>
-                                        <p className="text-sm text-gray-500">${item.price}</p>
+                                        <p className="text-sm text-gray-500">${item.price.toFixed(2)}</p>
                                         <p className="text-xs text-gray-400">{item.size}, {item?.shape}</p>
                                     </div>
                                 </div>

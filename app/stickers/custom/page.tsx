@@ -1,7 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
 import CartModal from "@/components/CartModal";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,9 @@ import { ArrowLeft, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import PriceBadge from "@/components/PriceBadge";
+
+
 
 export default function CategoryPage() {
     const { addToCart } = useCart(); // Use the addToCart function from the context
@@ -22,18 +25,48 @@ export default function CategoryPage() {
     const [quantity, setQuantity] = useState(1);
     const [selectedSizes, setSelectedSizes] = useState<{ [key: number]: string }>({});
     const [selectedShape, setSelectedShape] = useState<{ [key: number]: string }>({});
+    const [calculatedPrice, setCalculatedPrice] = useState<number | null>(null);
 
     const sticker = {
         id: 1,
         title: "Sample Sticker",
-        price: 10,
+        price: 0,
         rating: 4.5,
         sales: 100,
         sizes: ["Small", "Medium", "Large"],
         shape: ["Circle", "Square", "rectangle"],
-        sizePrice: [0, 2, 4],
+        sizePrice: [3, 5, 8],
         image: "/145.png"
     };
+
+    useEffect(() => {
+        const fetchPrice = async () => {
+            if (!selectedSizes[sticker.id] || quantity <= 0) return;
+
+            try {
+                const response = await fetch("/api/calculatePrice", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        size: selectedSizes[sticker.id].toLowerCase(),
+                        quantity
+                    })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    setCalculatedPrice(data.basePrice * quantity);
+                } else {
+                    setCalculatedPrice(null);
+                    console.error("Error fetching price:", data.error);
+                }
+            } catch (error) {
+                console.error("Failed to fetch price:", error);
+            }
+        };
+
+        fetchPrice();
+    }, [selectedSizes, quantity]);
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
@@ -45,7 +78,7 @@ export default function CategoryPage() {
 
     const handleAddToCart = (sticker: Sticker) => {
         const size = selectedSizes[sticker.id];
-        if (!size) {
+        if (!size || calculatedPrice === null) {
             toast({
                 title: "Please select size and color",
                 description: "You must select both size and color before adding to cart.",
@@ -57,7 +90,7 @@ export default function CategoryPage() {
         const cartItem: CartItem = {
             id: sticker.id,
             title: sticker.title,
-            price: sticker.price,
+            price: calculatedPrice,
             shape: selectedShape[sticker.id],
             quantity,
             image: imagePreview || sticker.image, // Use the preview URL or fallback to the default image
@@ -98,7 +131,7 @@ export default function CategoryPage() {
                             <div className="flex flex-col items-center gap-2">
                                 <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                                     {imagePreview ? (
-                                        <Image src={imagePreview} alt="Preview" className="w-full h-full object-cover rounded-lg" />
+                                        <Image src={imagePreview} alt="Preview" width={300} height={300} className="w-full h-full object-cover rounded-lg" />
                                     ) : (
                                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                             <UploadIcon className="w-8 h-8 mb-2 text-gray-500 dark:text-gray-400" />
@@ -113,27 +146,24 @@ export default function CategoryPage() {
                             </div>
 
                             <CardContent className="p-6">
-                                <div className="flex justify-between items-start mb-4">
+                                <div className="flex justify-between items-center mb-4">
                                     <div className="flex-1">
                                         <h2 className="text-xl font-bold">Custom sticker</h2>
                                     </div>
-                                    <div className="flex-2">
-                                        <div className="flex items-center gap-2">
-                                            <Input
-                                                type='number'
-                                                className="w-1/3"
-                                                placeholder="Quantity"
-                                                max={2000}
-                                                value={quantity}
-                                                onChange={(e) => {
-                                                    const value = Math.min(Number(e.target.value), 2000);
-                                                    setQuantity(value);
-                                                }}
-                                            />
-                                            <Badge variant="secondary" className="text-lg px-3 py-1">
-                                                ${Number(sticker.price * quantity + (quantity * (sticker.sizePrice?.[sticker.sizes.indexOf(selectedSizes[sticker.id])] || 0))).toFixed(2)}
-                                            </Badge>
-                                        </div>
+                                    <div className="flex-2 flex items-center gap-4">
+                                        <Input
+                                            type='number'
+                                            className="w-24"
+                                            placeholder="Quantity"
+                                            max={2000}
+                                            min={0}
+                                            value={quantity}
+                                            onChange={(e) => {
+                                                const value = Math.min(Number(e.target.value), 2000);
+                                                setQuantity(value);
+                                            }}
+                                        />
+                                        {calculatedPrice ? <PriceBadge price={calculatedPrice !== null ? calculatedPrice : null} /> : <div className="w-6 h-6 border-4 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>}
                                     </div>
                                 </div>
 
@@ -143,6 +173,7 @@ export default function CategoryPage() {
                                         <RadioGroup
                                             value={selectedSizes[sticker.id] || ""}
                                             onValueChange={(value) => setSelectedSizes({ ...selectedSizes, [sticker.id]: value })}
+                                            defaultValue="small"
                                         >
                                             <div className="flex gap-2 flex-wrap">
                                                 {sticker.sizes.map((size) => (

@@ -15,23 +15,23 @@ export async function POST(req) {
     console.log(baseUrl);
     const session = await stripe.checkout.sessions.create({
       customer_email: 'customer@example.com',
-        submit_type: 'donate',
-        billing_address_collection: 'auto',
-        shipping_address_collection: {
-          allowed_countries: [ 'PL'],
+      submit_type: 'donate',
+      billing_address_collection: 'auto',
+      shipping_address_collection: {
+        allowed_countries: ['PL'],
+      },
+      line_items: [
+        {
+          // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+          price: 'price_1QqgJXGbYVPFwzc50BHUyAjb',
+          quantity: 1,
         },
-        line_items: [
-          {
-            // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-            price: 'price_1QqgJXGbYVPFwzc50BHUyAjb',
-            quantity: 1,
-          },
-          
-        ],
+
+      ],
       mode: 'payment',
       success_url: `${baseUrl}/?success=true`,
       cancel_url: `${baseUrl}/?canceled=true`,
-      automatic_tax: {enabled: true},
+      automatic_tax: { enabled: true },
     });
 
     return new Response(null, {

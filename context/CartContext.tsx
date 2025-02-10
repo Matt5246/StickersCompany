@@ -6,8 +6,8 @@ import { CartItem, Sticker } from "@/types/types";
 interface CartContextType {
     cartItems: CartItem[];
     addToCart: (item: CartItem) => void;
-    removeFromCart: (id: string, size: string) => void;
-    updateQuantity: (id: string, size: string, newQuantity: number) => void;
+    removeFromCart: (id: number, size: string) => void;
+    updateQuantity: (id: number, size: string, newQuantity: number) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -35,21 +35,41 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         });
     };
 
-    const removeFromCart = (id: string, size: string) => {
+    const removeFromCart = (id: number, size: string) => {
         setCartItems((prevItems) =>
             prevItems.filter((item) => !(item.id === id && item.size === size))
         );
     };
+    const fetchPrice = async (size: string, quantity: number) => {
+        try {
+            const response = await fetch("/api/calculatePrice", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ size, quantity }),
+            });
 
-    const updateQuantity = (id: string, size: string, newQuantity: number) => {
+            const data = await response.json();
+            return response.ok ? data.basePrice * quantity : null;
+        } catch (error) {
+            console.error("Failed to fetch price:", error);
+            return null;
+        }
+    };
+    const updateQuantity = async (id: number, size: string, newQuantity: number) => {
+        if (newQuantity < 1) return;
+
+        const newPrice = await fetchPrice(size.toLowerCase(), newQuantity);
+
+        //@ts-ignore
         setCartItems((prevItems) =>
             prevItems.map((item) =>
                 item.id === id && item.size === size
-                    ? { ...item, quantity: newQuantity }
+                    ? { ...item, quantity: newQuantity, price: newPrice }
                     : item
             )
         );
     };
+
 
     return (
         <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity }}>
