@@ -5,6 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export const sizeLimits: Record<string, { min: number; max: number }> = {
+  Small: { min: 10, max: 30 },
+  Medium: { min: 31, max: 60 },
+  Large: { min: 61, max: 100 },
+};
 
 export const categoryData = {
     anime: {

@@ -56,7 +56,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         }
     };
     const updateQuantity = async (id: number, size: string, newQuantity: number) => {
-        if (newQuantity < 1) return;
+        if (newQuantity < 1 || newQuantity > 2000) return;
 
         const newPrice = await fetchPrice(size.toLowerCase(), newQuantity);
 

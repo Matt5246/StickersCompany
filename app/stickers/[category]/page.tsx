@@ -2,10 +2,11 @@
 "use client";
 
 import CartModal from "@/components/CartModal"; // Import the CartModal component
-import { Badge } from "@/components/ui/badge";
+import PriceBadge from "@/components/PriceBadge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -13,13 +14,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCart } from "@/context/CartContext"; // Import the useCart hook
 import { useToast } from "@/hooks/use-toast";
 import { categoryData } from "@/lib/utils";
-import { ArrowLeft, Heart, ShoppingCart, Star, ZoomIn } from "lucide-react";
+import { Sticker } from "@/types/types";
+import { ArrowLeft, Check, Filter, Heart, ShoppingCart, SlidersHorizontal, Star, ZoomIn } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Check, Filter, SlidersHorizontal } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Sticker } from "@/types/types";
 
 export default function CategoryPage({ params }: { params: { category: string } }) {
     const category = categoryData[params.category as keyof typeof categoryData];
@@ -282,9 +281,8 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                                 setQuantity(value);
                                             }}
                                         />
-                                        <Badge variant="secondary" className="text-lg px-3 py-1">
-                                            ${Number(sticker.price * quantity + (quantity * (sticker.sizePrice?.[sticker.sizes.indexOf(selectedSizes[sticker.id])] || 0))).toFixed(2)}
-                                        </Badge>
+
+                                        <PriceBadge price={sticker.price !== null ? sticker.price : null} />
                                     </div>
                                 </div>
 

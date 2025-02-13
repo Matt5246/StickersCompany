@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useCart } from "@/context/CartContext"; // Import the useCart hook
+import { useCart } from "@/context/CartContext";
 import { toast } from "@/hooks/use-toast";
 import { CartItem, Sticker } from "@/types/types";
 import { ArrowLeft, ShoppingCart } from "lucide-react";
@@ -15,26 +15,27 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import PriceBadge from "@/components/PriceBadge";
-
+import { sizeLimits } from "@/lib/utils";
 
 
 export default function CategoryPage() {
-    const { addToCart } = useCart(); // Use the addToCart function from the context
-    const [imageFile, setImageFile] = useState<File | null>(null); // Store the image file
-    const [imagePreview, setImagePreview] = useState<string | null>(null); // Store the image preview URL
+    const { addToCart } = useCart();
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [quantity, setQuantity] = useState(1);
     const [selectedSizes, setSelectedSizes] = useState<{ [key: number]: string }>({});
     const [selectedShape, setSelectedShape] = useState<{ [key: number]: string }>({});
     const [calculatedPrice, setCalculatedPrice] = useState<number | null>(null);
+    const [customSize, setCustomSize] = useState<number | null>(null);
 
     const sticker = {
         id: 1,
-        title: "Sample Sticker",
+        title: "Custom Sticker",
         price: 0,
         rating: 4.5,
         sales: 100,
         sizes: ["Small", "Medium", "Large"],
-        shape: ["Circle", "Square", "rectangle"],
+        shape: ["Circle", "Square", "Rectangle"],
         sizePrice: [3, 5, 8],
         image: "/145.png"
     };
@@ -78,22 +79,24 @@ export default function CategoryPage() {
 
     const handleAddToCart = (sticker: Sticker) => {
         const size = selectedSizes[sticker.id];
-        if (!size || calculatedPrice === null) {
+        const shape = selectedShape[sticker.id];
+        if (!size || !shape || calculatedPrice === null || customSize === null) {
             toast({
-                title: "Please select size and color",
-                description: "You must select both size and color before adding to cart.",
+                title: "Please select size and Shape",
+                description: "You must select both size pick the custom size and shape before adding to cart.",
                 variant: "destructive",
             });
             return;
         }
 
         const cartItem: CartItem = {
-            id: sticker.id,
+            id: Date.now(),
             title: sticker.title,
             price: calculatedPrice,
-            shape: selectedShape[sticker.id],
+            shape,
             quantity,
-            image: imagePreview || sticker.image, // Use the preview URL or fallback to the default image
+            customSize,
+            image: imagePreview || sticker.image,
             size,
             imageFile: imageFile || null,
         };
@@ -104,6 +107,17 @@ export default function CategoryPage() {
             title: "Added to cart",
             description: `${sticker.title} (${size}) has been added to your cart.`,
         });
+    };
+
+    const handleSizeChange = (value: string) => {
+        setSelectedSizes({ ...selectedSizes, [sticker.id]: value });
+        setCustomSize(sizeLimits[value]?.min || 10);
+    };
+
+    const shapeStyles: { [key: string]: string } = {
+        Circle: "w-64 h-64 rounded-full",
+        Square: "w-64 h-64",
+        Rectangle: "w-64 h-48",
     };
 
     return (
@@ -126,15 +140,20 @@ export default function CategoryPage() {
                         </div>
                     </div>
 
-                    <div className="flex justify-center items-center h-full">
+                    <div className="flex justify-center items-center h-full mt-[50px]">
                         <Card key={sticker.id} className="w-96 overflow-hidden hover:shadow-xl transition-all">
                             <div className="flex flex-col items-center gap-2">
-                                <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                                <Label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                                     {imagePreview ? (
-                                        <Image src={imagePreview} alt="Preview" width={300} height={300} className="w-full h-full object-cover rounded-lg" />
+                                        <Image src={imagePreview} alt="Preview" width={500} height={500} className={`object-cover ${shapeStyles[selectedShape[sticker.id]]}`}
+                                            style={{
+                                                borderRadius: selectedShape[sticker.id] === "Circle" ? "50%" : "0%",
+                                            }} />
                                     ) : (
                                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                            <UploadIcon className="w-8 h-8 mb-2 text-gray-500 dark:text-gray-400" />
+                                            <UploadIcon
+                                                //@ts-ignore
+                                                className="w-8 h-8 mb-2 text-gray-500 dark:text-gray-400" />
                                             <p className="text-sm text-gray-500 dark:text-gray-400">
                                                 <span className="font-semibold">Click to upload</span> or drag and drop
                                             </p>
@@ -142,7 +161,7 @@ export default function CategoryPage() {
                                         </div>
                                     )}
                                     <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
-                                </label>
+                                </Label>
                             </div>
 
                             <CardContent className="p-6">
@@ -150,13 +169,13 @@ export default function CategoryPage() {
                                     <div className="flex-1">
                                         <h2 className="text-xl font-bold">Custom sticker</h2>
                                     </div>
-                                    <div className="flex-2 flex items-center gap-4">
+                                    <div className="flex-2 flex items-center gap-2">
                                         <Input
                                             type='number'
-                                            className="w-24"
+                                            className="w-min-[50px] w-[75px]"
                                             placeholder="Quantity"
                                             max={2000}
-                                            min={0}
+                                            min={1}
                                             value={quantity}
                                             onChange={(e) => {
                                                 const value = Math.min(Number(e.target.value), 2000);
@@ -172,7 +191,10 @@ export default function CategoryPage() {
                                         <h4 className="font-medium mb-2">Size:</h4>
                                         <RadioGroup
                                             value={selectedSizes[sticker.id] || ""}
-                                            onValueChange={(value) => setSelectedSizes({ ...selectedSizes, [sticker.id]: value })}
+                                            onValueChange={(value) => {
+                                                setSelectedSizes({ ...selectedSizes, [sticker.id]: value });
+                                                handleSizeChange(value);
+                                            }}
                                             defaultValue="small"
                                         >
                                             <div className="flex gap-2 flex-wrap">
@@ -189,6 +211,24 @@ export default function CategoryPage() {
                                                 ))}
                                             </div>
                                         </RadioGroup>
+                                        <Input
+                                            type="number"
+                                            className="w-full mt-3"
+                                            placeholder="Choose size above first"
+                                            min={sizeLimits[selectedSizes[sticker.id]]?.min || 10}
+                                            max={sizeLimits[selectedSizes[sticker.id]]?.max || 100}
+                                            value={customSize || undefined}
+                                            required
+                                            disabled={!selectedSizes[sticker.id]}
+                                            onChange={(e) => {
+                                                const value = Number(e.target.value);
+                                                const limits = sizeLimits[selectedSizes[sticker.id]];
+                                                if (limits) {
+                                                    setCustomSize(Math.min(Math.max(value, limits.min), limits.max));
+                                                }
+                                            }}
+                                        />
+                                        <span className="text-sm text-gray-500 dark:text-gray-400">Custom size in mm</span>
                                     </div>
 
                                     <div>

@@ -1,20 +1,22 @@
 import Stripe from 'stripe';
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
+import { NextResponse } from "next/server";
 
-export async function POST(req) {
+
+export async function POST(req: Request) {
   try {
-    const body = await req.json().catch(() => null); // Gracefully handle invalid JSON
-    console.log(body);
-    // if (!body || !body.lineItems) {
-    //   return new Response(JSON.stringify({ error: 'Invalid request body' }), {
-    //     status: 400,
-    //     headers: { 'Content-Type': 'application/json' },
-    //   });
-    // }
-    const baseUrl = req.headers.origin || 'http://localhost:3000';
-    console.log(baseUrl);
+    const body = await req.json();
+    console.log('route res:',body);
+    if (!body) {
+      return new Response(JSON.stringify({ error: 'Invalid request body' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    const baseUrl = req.headers.get('origin') || 'http://localhost:3000';
+
     const session = await stripe.checkout.sessions.create({
-      customer_email: 'customer@example.com',
+      customer_email: body.email,
       submit_type: 'donate',
       billing_address_collection: 'auto',
       shipping_address_collection: {
@@ -33,14 +35,13 @@ export async function POST(req) {
       cancel_url: `${baseUrl}/?canceled=true`,
       automatic_tax: { enabled: true },
     });
-
-    return new Response(null, {
-      status: 303,
-      headers: { 'Location': session.url },
+    return new NextResponse(JSON.stringify({ url: session.url }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error('Stripe API Error:', err);
-    return new Response(JSON.stringify({ error: err.message }), {
+    return new NextResponse(JSON.stringify({ error: err.message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
