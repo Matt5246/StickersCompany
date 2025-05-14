@@ -1,0 +1,13 @@
+Price ID,Product ID,Product Name,Product Statement Descriptor,Product Tax Code,Description,Created (UTC),Amount,Currency,Interval,Interval Count,Usage Type,Aggregate Usage,Billing Scheme,Trial Period Days,Tax Behavior
+price_1R95cjQtoFX6E6hK5m0aldr5,prod_S3C0duzieiuDYY,Duża naklejka,,,,2025-04-01 14:17,6.00,pln,,,,,per_unit,,unspecified
+price_1R95cGQtoFX6E6hKamtYANf0,prod_S3C0Q72lkTRaUT,Duża naklejka,,,,2025-04-01 14:16,7.00,pln,,,,,per_unit,,unspecified
+price_1R95bmQtoFX6E6hKlPVj4yRL,prod_S3BzBUZWaTS2p3,Duża naklejka,,,,2025-04-01 14:16,8.00,pln,,,,,per_unit,,unspecified
+price_1R95avQtoFX6E6hKI1N7a41y,prod_S3ByvsyiFyLXrc,Średnia naklajka,,,,2025-04-01 14:15,2.70,pln,,,,,per_unit,,unspecified
+price_1R95a4QtoFX6E6hKw3ceEdus,prod_S3By3fc8zZyTTo,Średnia naklejka,,,,2025-04-01 14:14,3.00,pln,,,,,per_unit,,unspecified
+price_1R95Z7QtoFX6E6hKOczI0Lny,prod_S3BxSrd91h0AOa,Średnia naklejka,,,,2025-04-01 14:13,3.50,pln,,,,,per_unit,,unspecified
+price_1R95YRQtoFX6E6hKIzsODDL4,prod_S3BwJ2gxW94VJF,Średnia naklejka,,,,2025-04-01 14:12,3.70,pln,,,,,per_unit,,unspecified
+price_1R95PsQtoFX6E6hKEY9pp9K2,prod_S3BnzaUYBmseZe,Mała naklejka,,,,2025-04-01 14:03,1.20,pln,,,,,per_unit,,unspecified
+price_1R95POQtoFX6E6hKbetBNmh1,prod_S3Bm6PVTWf5DjG,Mała naklejka,,,,2025-04-01 14:03,1.40,pln,,,,,per_unit,,unspecified
+price_1R95OwQtoFX6E6hKrPAYa055,prod_S3BmqkqTOswmBR,Mała naklejka,,,,2025-04-01 14:02,2.00,pln,,,,,per_unit,,unspecified
+price_1R95O0QtoFX6E6hKzgK94h7d,prod_S3BlWpks19D2Wm,Mała naklejka,,,,2025-04-01 14:01,2.50,pln,,,,,per_unit,,unspecified
+price_1R95IaQtoFX6E6hKhpwLkS0k,prod_S3BflBzWW5Ewju,Mała naklejka,,,,2025-04-01 13:56,3.00,pln,,,,,per_unit,,unspecified

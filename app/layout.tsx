@@ -7,7 +7,7 @@ import { CartProvider } from '@/context/CartContext';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Custom Car Stickers - Smolarek stickers',
+  title: 'Stickerki',
   description: 'Premium vinyl car stickers featuring anime designs, classic patterns, and custom creations. Make your vehicle truly unique.',
 };
 

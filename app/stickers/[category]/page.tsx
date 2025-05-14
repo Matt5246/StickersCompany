@@ -94,8 +94,8 @@ export default function CategoryPage({ params }: { params: { category: string } 
 
         addToCart({
             id: sticker.id,
-            title: sticker.title,
-            price: sticker.price,
+            name: sticker.title,
+            amount: sticker.price,
             quantity,
             image: sticker.image,
             size,
@@ -331,7 +331,7 @@ export default function CategoryPage({ params }: { params: { category: string } 
                                     </div>
                                 </div>
 
-                                <Button className="w-full gap-2" onClick={() => handleAddToCart(sticker)}>
+                                <Button className="w-full gap-2" onClick={() => handleAddToCart({ ...sticker, sizePrice: sticker.sizePrice.flat() as number[] })}>
                                     <ShoppingCart className="h-5 w-5" />
                                     Add to Cart
                                 </Button>

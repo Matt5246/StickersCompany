@@ -5,84 +5,85 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ShoppingCart, Star, ChevronRight, Sparkles, Palette, Pencil } from "lucide-react";
+import { Heart, ShoppingCart, Star, ChevronRight, Sparkles } from "lucide-react";
 
 const categories = [
-  {
-    id: "custom",
-    title: "Custom Designs",
-    description: "Bring your vision to life with our professional artists. Custom-made stickers tailored to your specifications.",
-    icon: <Pencil className="h-6 w-6" />,
-    image: "/150.jpg",
-    items: [
-      {
-        id: 8,
-        title: "milo in green",
-        price: 14.99,
-        image: "/150.jpg",
-        rating: 4.7,
-        sales: 900,
-        badge: "New"
-      },
-    ]
-  },
+  // {
+  //   id: "custom",
+  //   title: "Custom Designs",
+  //   description: "Bring your vision to life with our professional artists. Custom-made stickers tailored to your specifications.",
+  //   icon: <Pencil className="h-6 w-6" />,
+  //   image: "/150.jpg",
+  //   items: [
+  //     {
+  //       id: 8,
+  //       title: "milo in green",
+  //       price: 14.99,
+  //       image: "/150.jpg",
+  //       rating: 4.7,
+  //       sales: 900,
+  //       badge: "New"
+  //     },
+  //   ]
+  // },
   {
     id: "anime",
     title: "Anime Stickers",
-    description: "Transform your ride with premium anime-inspired vinyl stickers featuring your favorite characters and series.",
+    description: "Anime-inspired stickers that capture the essence of your favorite characters and series.",
     icon: <Sparkles className="h-6 w-6" />,
-    image: "https://images.unsplash.com/photo-1614036634955-ae5e90f9b9eb?w=800&auto=format&fit=crop&q=60",
+    image: "/Wale.png",
     items: [
       {
         id: 3,
-        title: "Racing Stripes Pro",
+        title: "Yukki",
         price: 14.99,
-        image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60",
+        image: "/Yuki1.png",
         rating: 4.6,
         sales: 567,
         badge: "Premium"
       },
       {
         id: 4,
-        title: "Dragon Tribal Design",
+        title: "Jinx",
         price: 19.99,
-        image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60",
+        image: "/Jinx.png",
         rating: 4.5,
         sales: 234,
         badge: "New"
       }
     ]
   },
-  {
-    id: "regular",
-    title: "Regular Stickers",
-    description: "Premium vinyl decals designed to make your vehicle stand out with style and personality.",
-    icon: <Palette className="h-6 w-6" />,
-    image: "https://images.unsplash.com/photo-1614036634955-ae5e90f9b9eb?w=800&auto=format&fit=crop&q=60",
-    items: [
-      {
-        id: 3,
-        title: "Racing Stripes Pro",
-        price: 14.99,
-        image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60",
-        rating: 4.6,
-        sales: 567,
-        badge: "Premium"
-      },
-      {
-        id: 4,
-        title: "Dragon Tribal Design",
-        price: 19.99,
-        image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60",
-        rating: 4.5,
-        sales: 234,
-        badge: "New"
-      }
-    ]
-  }
+  // {
+  //   id: "regular",
+  //   title: "Regular Stickers",
+  //   description: "Premium vinyl decals designed to make your vehicle stand out with style and personality.",
+  //   icon: <Palette className="h-6 w-6" />,
+  //   image: "https://images.unsplash.com/photo-1614036634955-ae5e90f9b9eb?w=800&auto=format&fit=crop&q=60",
+  //   items: [
+  //     {
+  //       id: 3,
+  //       title: "Racing Stripes Pro",
+  //       price: 14.99,
+  //       image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60",
+  //       rating: 4.6,
+  //       sales: 567,
+  //       badge: "Premium"
+  //     },
+  //     {
+  //       id: 4,
+  //       title: "Dragon Tribal Design",
+  //       price: 19.99,
+  //       image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&auto=format&fit=crop&q=60",
+  //       rating: 4.5,
+  //       sales: 234,
+  //       badge: "New"
+  //     }
+  //   ]
+  // }
 ];
 
 export default function Home() {
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <div className="relative h-[70vh] bg-black overflow-hidden">
@@ -91,15 +92,17 @@ export default function Home() {
         <div className="absolute inset-0 flex items-center justify-center text-white">
           <div className="text-center space-y-6 px-4 max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-100">
-              Smolarek stickers
+              Stickerki
             </h1>
             <p className="text-xl md:text-2xl opacity-90 max-w-2xl mx-auto">
-              Premium vinyl stickers and custom designs to make your vehicle cool
+              Naklejki dla bratków.
             </p>
             <div className="flex gap-4 justify-center mt-8 text-blue-600 ">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8">
-                Explore Collections
-              </Button>
+              <Link href='/stickers/personalized'>
+                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8">
+                  Personalized
+                </Button>
+              </Link>
               <Link href='/stickers/custom'>
                 <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8" >
                   Custom Design

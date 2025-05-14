@@ -27,10 +27,11 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             if (existingItem) {
                 return prevItems.map((i) =>
                     i.id === item.id && i.size === item.size
-                        ? { ...i, quantity: i.quantity + item.quantity }
+                        ? { ...i, quantity: (i.quantity ?? 0) + (item.quantity ?? 0), imageFile: item.imageFile }
                         : i
                 );
             }
+            console.log('Adding new item to cart:', item);
             return [...prevItems, item];
         });
     };

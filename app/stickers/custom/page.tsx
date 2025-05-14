@@ -17,33 +17,32 @@ import { useState } from "react";
 import PriceBadge from "@/components/PriceBadge";
 import { sizeLimits } from "@/lib/utils";
 
-
 export default function CategoryPage() {
     const { addToCart } = useCart();
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [quantity, setQuantity] = useState(1);
+    const [quantity, setQuantity] = useState(0);
     const [selectedSizes, setSelectedSizes] = useState<{ [key: number]: string }>({});
     const [selectedShape, setSelectedShape] = useState<{ [key: number]: string }>({});
     const [calculatedPrice, setCalculatedPrice] = useState<number | null>(null);
+    const [discount, setDiscount] = useState<number | null>(null);
     const [customSize, setCustomSize] = useState<number | null>(null);
 
     const sticker = {
         id: 1,
-        title: "Custom Sticker",
-        price: 0,
+        title: "Mała naklejka",
+        price: 3,
         rating: 4.5,
         sales: 100,
         sizes: ["Small", "Medium", "Large"],
+        quantity: [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100], [5, 10, 25]],
         shape: ["Circle", "Square", "Rectangle"],
-        sizePrice: [3, 5, 8],
-        image: "/145.png"
+        image: "/145.png",
+        sizePrice: [3, 5, 7],
     };
-
     useEffect(() => {
         const fetchPrice = async () => {
             if (!selectedSizes[sticker.id] || quantity <= 0) return;
-
             try {
                 const response = await fetch("/api/calculatePrice", {
                     method: "POST",
@@ -55,10 +54,13 @@ export default function CategoryPage() {
                 });
 
                 const data = await response.json();
+
                 if (response.ok) {
                     setCalculatedPrice(data.basePrice * quantity);
+                    setDiscount(data.discount);
                 } else {
                     setCalculatedPrice(null);
+                    setDiscount(null);
                     console.error("Error fetching price:", data.error);
                 }
             } catch (error) {
@@ -67,7 +69,7 @@ export default function CategoryPage() {
         };
 
         fetchPrice();
-    }, [selectedSizes, quantity]);
+    }, [selectedSizes, quantity, sticker.id]);
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
@@ -80,19 +82,28 @@ export default function CategoryPage() {
     const handleAddToCart = (sticker: Sticker) => {
         const size = selectedSizes[sticker.id];
         const shape = selectedShape[sticker.id];
-        if (!size || !shape || calculatedPrice === null || customSize === null) {
+        if (!size || !shape || !quantity || calculatedPrice === null || customSize === null) {
             toast({
-                title: "Please select size and Shape",
+                title: "Please select size, quantity and Shape",
                 description: "You must select both size pick the custom size and shape before adding to cart.",
                 variant: "destructive",
             });
             return;
         }
+        let stickerName = sticker.title;
+        if (size === "Medium") {
+            stickerName = "Średnia naklejka";
+        } else if (size === "Large") {
+            stickerName = "Duża naklejka";
+        } else {
+            stickerName = "Mała naklejka";
+        }
+
 
         const cartItem: CartItem = {
             id: Date.now(),
-            title: sticker.title,
-            price: calculatedPrice,
+            name: stickerName,
+            amount: calculatedPrice,
             shape,
             quantity,
             customSize,
@@ -143,7 +154,7 @@ export default function CategoryPage() {
                     <div className="flex justify-center items-center h-full mt-[50px]">
                         <Card key={sticker.id} className="w-96 overflow-hidden hover:shadow-xl transition-all">
                             <div className="flex flex-col items-center gap-2">
-                                <Label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                                <Label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-xl cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                                     {imagePreview ? (
                                         <Image src={imagePreview} alt="Preview" width={500} height={500} className={`object-cover ${shapeStyles[selectedShape[sticker.id]]}`}
                                             style={{
@@ -152,7 +163,7 @@ export default function CategoryPage() {
                                     ) : (
                                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                             <UploadIcon
-                                                //@ts-ignore
+                                                //@ts-expect-error className is not a valid prop for SVG
                                                 className="w-8 h-8 mb-2 text-gray-500 dark:text-gray-400" />
                                             <p className="text-sm text-gray-500 dark:text-gray-400">
                                                 <span className="font-semibold">Click to upload</span> or drag and drop
@@ -170,19 +181,8 @@ export default function CategoryPage() {
                                         <h2 className="text-xl font-bold">Custom sticker</h2>
                                     </div>
                                     <div className="flex-2 flex items-center gap-2">
-                                        <Input
-                                            type='number'
-                                            className="w-min-[50px] w-[75px]"
-                                            placeholder="Quantity"
-                                            max={2000}
-                                            min={1}
-                                            value={quantity}
-                                            onChange={(e) => {
-                                                const value = Math.min(Number(e.target.value), 2000);
-                                                setQuantity(value);
-                                            }}
-                                        />
-                                        {calculatedPrice ? <PriceBadge price={calculatedPrice !== null ? calculatedPrice : null} /> : <div className="w-6 h-6 border-4 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>}
+
+                                        {calculatedPrice ? <PriceBadge price={calculatedPrice !== null ? calculatedPrice : null} discount={discount} /> : <div className="w-6 h-6 border-4 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>}
                                     </div>
                                 </div>
 
@@ -194,6 +194,7 @@ export default function CategoryPage() {
                                             onValueChange={(value) => {
                                                 setSelectedSizes({ ...selectedSizes, [sticker.id]: value });
                                                 handleSizeChange(value);
+                                                setQuantity(0);
                                             }}
                                             defaultValue="small"
                                         >
@@ -230,7 +231,29 @@ export default function CategoryPage() {
                                         />
                                         <span className="text-sm text-gray-500 dark:text-gray-400">Custom size in mm</span>
                                     </div>
-
+                                    <div>
+                                        <h4 className="font-medium mb-2">Quantity: {quantity}</h4>
+                                        <RadioGroup
+                                            value={quantity.toString()}
+                                            onValueChange={(value) => {
+                                                setQuantity(Number(value));
+                                            }}
+                                        >
+                                            <div className="flex gap-2 flex-wrap">
+                                                {sticker.quantity[sticker.sizes.indexOf(selectedSizes[sticker.id] || sticker.sizes[0])].map((quantity) => (
+                                                    <div key={quantity}>
+                                                        <RadioGroupItem value={quantity.toString()} id={`${sticker.id}-${quantity}`} className="peer sr-only" />
+                                                        <Label
+                                                            htmlFor={`${sticker.id}-${quantity}`}
+                                                            className="flex items-center justify-center rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                                                        >
+                                                            {quantity}
+                                                        </Label>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </RadioGroup>
+                                    </div>
                                     <div>
                                         <h4 className="font-medium mb-2">Shape:</h4>
                                         <RadioGroup
@@ -261,6 +284,16 @@ export default function CategoryPage() {
                             </CardContent>
                         </Card>
                     </div>
+                    {/* <CldImage
+                        src="cld-sample-5" // Use this sample image or upload your own via the Media Explorer
+                        width="500" // Transform the image: auto-crop to square aspect_ratio
+                        height="500"
+                        crop={{
+                            type: 'auto',
+                            source: true
+                        }}
+                        alt="Sample Image"
+                    /> */}
                 </div>
             </div>
         </div>

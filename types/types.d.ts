@@ -14,8 +14,8 @@ export interface Sticker {
 
 export interface CartItem {
     id:  number;
-    title: string;
-    price: number;
+    name: string;
+    amount: number;
     quantity?: number;
     image: string;
     shape?: string;

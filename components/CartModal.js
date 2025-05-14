@@ -66,12 +66,12 @@ export default function CartModal() {
                                         width={500}
                                         height={500}
                                         src={item.image}
-                                        alt={item.title}
+                                        alt={item.name}
                                         className="w-12 h-12 object-cover mr-4"
                                     />
                                     <div>
                                         <h3 className="font-semibold">{item.title}</h3>
-                                        <p className="text-sm text-gray-500">{item.price % 1 === 0 ? item.price.toFixed(0) : item.price.toFixed(2)}zł</p>
+                                        <p className="text-sm text-gray-500">{item.amount % 1 === 0 ? item.amount.toFixed(0) : item.amount.toFixed(2)}zł</p>
                                         <p className="text-xs text-gray-400">{item.size}-{item.customSize}mm, {item?.shape}</p>
                                     </div>
                                 </div>
